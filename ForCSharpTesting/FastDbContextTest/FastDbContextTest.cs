@@ -26,7 +26,10 @@ public class FastDbContextTest
         string connectionString = "Host=localhost;Port=32768;Database=postgres_test;Username=postgres;Password=postgres";
 
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-        optionsBuilder.UseNpgsql(connectionString);
+        optionsBuilder
+            //.UseLazyLoadingProxies()
+            .UseNpgsql(connectionString)
+            .LogTo(s => Console.WriteLine(s));
 
         var dbContext = new ApplicationDbContext(optionsBuilder.Options);
         dbContext.Database.EnsureCreated();
@@ -41,5 +44,7 @@ public class FastDbContextTest
             dbContext.Test1.AddRange(list);
             dbContext.SaveChanges();
         }
+
+        var v1 = dbContext.Test1.ToArray();
     }
 }

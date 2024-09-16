@@ -1,8 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForCSharpTesting", "ForCSharpTesting\ForCSharpTesting.csproj", "{9D937072-30CB-4D5A-941A-A5AE9127A7CA}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35122.118
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ForCSharpTesting", "ForCSharpTesting\ForCSharpTesting.csproj", "{9D937072-30CB-4D5A-941A-A5AE9127A7CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForCSharpTesting_Tests", "ForCSharpTesting_Tests\ForCSharpTesting_Tests.csproj", "{47560D0D-DAE0-4027-992A-B8AFCCA236FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ForCSharpTesting_Tests", "ForCSharpTesting_Tests\ForCSharpTesting_Tests.csproj", "{47560D0D-DAE0-4027-992A-B8AFCCA236FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +21,11 @@ Global
 		{47560D0D-DAE0-4027-992A-B8AFCCA236FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47560D0D-DAE0-4027-992A-B8AFCCA236FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47560D0D-DAE0-4027-992A-B8AFCCA236FD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {72E7F58C-5957-4CF1-9A7F-E7C7EB6D60BE}
 	EndGlobalSection
 EndGlobal

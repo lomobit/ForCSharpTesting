@@ -5,17 +5,17 @@ namespace ForCSharpTesting.Benchmarks;
 
 public class CheckEmptyString
 {
-    [Params(null, "", " ", "Turbocharged: Writing High-Performance C# and .NET Code - Steve Gordon - NDC Oslo 2024")]
+    //[Params(null, "", " ", "Turbocharged: Writing High-Performance C# and .NET Code - Steve Gordon - NDC Oslo 2024")]
     public string? StringForCheck;
 
-    [Benchmark]
+    //[Benchmark]
     public void StringIsNullOrWhiteSpace()
     {
         var result = string.IsNullOrWhiteSpace(StringForCheck);
     }
 
 
-    [Benchmark]
+    //[Benchmark]
     public void MemoryExtensionsIsWhiteSpace()
     {
         var length = StringForCheck?.Length ?? 0;

@@ -9,5 +9,6 @@ public class Program
     {
         //_5_IsFunctionEven.CheckX();
         _5_IsFunctionEven.RunInternalTests();
+        _5_IsFunctionEven.RunTestsFromFiles();
     }
 }

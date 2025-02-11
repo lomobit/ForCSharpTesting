@@ -9,10 +9,9 @@ namespace ForCSharpTesting.GraviLink
 {
     public static class _5_IsFunctionEven
     {
-        public static void CheckX()
+        public static void RunTestsFromFiles()
         {
             List<string> files = [
-                "C:\\Users\\vghslnk\\OneDrive\\Рабочий стол\\5_test.txt",
                 "C:\\Users\\vghslnk\\OneDrive\\Рабочий стол\\5_1.txt",
                 "C:\\Users\\vghslnk\\OneDrive\\Рабочий стол\\5_2.txt"
             ];
@@ -20,27 +19,16 @@ namespace ForCSharpTesting.GraviLink
             foreach (string file in files)
             {
                 var lines = File.ReadAllLines(file);
-                var dict = new Dictionary<string, int>();
+
+                var points = new List<(int, int)>(lines.Length - 1);
                 for (int i = 1; i < lines.Length; i++)
                 {
-                    var x = lines[i].Trim().Split(" ")[0];
-                    if (!dict.TryAdd(x, 1))
-                    {
-                        dict[x]++;
-                    }
+                    var coord = lines[i].Trim().Split(" ");
+                    points.Add((int.Parse(coord[0]), int.Parse(coord[1])));
                 }
 
-                var result = false;
-                foreach (var value in dict.Values)
-                {
-                    if (value > 1)
-                    {
-                        result = true;
-                        break;
-                    }
-                }
-
-                Console.WriteLine(result);
+                var result = Solve(points);
+                Console.WriteLine($"result: {result.result} | anyRepeats: {result.anyRepeats} | filePath: {file}");
             }
         }
 
@@ -53,9 +41,9 @@ namespace ForCSharpTesting.GraviLink
             Console.WriteLine();
         }
 
-        private static (int k, int b) GetStraightLineFormula((int x, int y) firstPoint, (int x, int y) secondPoint)
+        private static (double k, double b) GetStraightLineFormula((int x, int y) firstPoint, (int x, int y) secondPoint)
         {
-            var k = (secondPoint.y - firstPoint.y) / (secondPoint.x - firstPoint.x);
+            var k = (double)(secondPoint.y - firstPoint.y) / (secondPoint.x - firstPoint.x);
             var b = firstPoint.y - firstPoint.x * k;
 
             //Console.WriteLine($"line from points {firstPoint.x}:{firstPoint.y} and {secondPoint.x}:{secondPoint.y} => y = {k}x + {b}");
@@ -95,12 +83,12 @@ namespace ForCSharpTesting.GraviLink
             return result;
         }
 
-        public static bool Solve(List<(int x, int y)> points)
+        public static (bool result, bool anyRepeats) Solve(List<(int x, int y)> points)
         {
             var sortedByXPoints = points.OrderBy(p => p.x).ToList();
             //PrintPointsList(sortedByXPoints);
 
-            var coefs = new List<(int k, int b)>(sortedByXPoints.Count);
+            var coefs = new List<(double k, double b)>(sortedByXPoints.Count);
             for (int i = 1; i < sortedByXPoints.Count; i++)
             {
                 coefs.Add(GetStraightLineFormula(sortedByXPoints[i - 1], sortedByXPoints[i]));
@@ -111,15 +99,17 @@ namespace ForCSharpTesting.GraviLink
                 sortedByXPoints[0]
             };
 
-            (int? k, int? b) lastCoefs = (null, null);
+            (double? k, double? b) lastCoefs = (null, null);
             int lastUniqueIndex = 0;
 
+            var anyRepeats = false;
             for (int i = 0; i < coefs.Count; i++)
             {
                 if (coefs[i].k == lastCoefs.k && coefs[i].b == lastCoefs.b)
                 {
                     resultPoints[lastUniqueIndex] = sortedByXPoints[i + 1];
 
+                    anyRepeats = true;
                     continue;
                 }
 
@@ -133,7 +123,7 @@ namespace ForCSharpTesting.GraviLink
             //PrintPointsList(resultPoints);
 
 
-            return IsFunctionEven(resultPoints);
+            return (IsFunctionEven(resultPoints), anyRepeats);
         }
 
         public static void RunInternalTests()
@@ -225,14 +215,14 @@ namespace ForCSharpTesting.GraviLink
                 var result = Solve(test.points);
 
                 Console.Write($"[{test.testNumber / 1000}_00{test.testNumber % 1000}]  \t");
-                Console.ForegroundColor = result == test.expectedResult
+                Console.ForegroundColor = result.result == test.expectedResult
                     ? ConsoleColor.Green
                     : ConsoleColor.Red;
-                Console.WriteLine($"[{(result == test.expectedResult).ToString().ToUpper()}]\t\t{result}:{test.expectedResult}");
+                Console.WriteLine($"[{(result.result == test.expectedResult).ToString().ToUpper()}]\t\t{result.result}:{test.expectedResult}");
                 Console.ForegroundColor = initialColor;
 
                 total++;
-                if (result == test.expectedResult)
+                if (result.result == test.expectedResult)
                 {
                     correct++;
                 }
@@ -251,6 +241,10 @@ namespace ForCSharpTesting.GraviLink
             Console.Write($"{total - correct}");
             Console.ForegroundColor = initialColor;
             Console.Write($"/{total}");
+
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
         }
     }
 }

@@ -3,6 +3,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ForCSharpTesting.Benchmarks;
 
+
 public class CheckEmptyString
 {
     //[Params(null, "", " ", "Turbocharged: Writing High-Performance C# and .NET Code - Steve Gordon - NDC Oslo 2024")]

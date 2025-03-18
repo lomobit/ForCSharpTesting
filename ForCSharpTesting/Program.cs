@@ -29,7 +29,7 @@ public class Program
         var pool = ArrayPool<Bitmap>.Shared;
 
         Console.WriteLine($"TotalMemory_before: {GC.GetTotalMemory(true)}");
-        Image image = Image.FromFile(smallFilePath);
+        //Image image = Image.FromFile(smallFilePath);
 
         for (int ii = 0; ii < 100; ii++)
         {
@@ -43,42 +43,40 @@ public class Program
                 //Console.WriteLine($"TotalMemory_fileStream: {GC.GetTotalMemory(true)}");
 
                 // Преобразование Stream в Image
-                //using (Image image = Image.FromStream(fileStream))
-                //{
-                //Console.WriteLine($"TotalAllocatedBytes_image: {GC.GetTotalAllocatedBytes()}");
-                //Console.WriteLine($"TotalMemory_image: {GC.GetTotalMemory(true)}");
-                var bitmapArr = pool.Rent(sizes.Length);
-
-                for (int i = 0; i < sizes.Length; i++)
+                using (Image image = Image.FromStream(readerStream))
                 {
-                    var size = sizes[i];
-                    if (size > image.Width)
+                    //Console.WriteLine($"TotalAllocatedBytes_image: {GC.GetTotalAllocatedBytes()}");
+                    //Console.WriteLine($"TotalMemory_image: {GC.GetTotalMemory(true)}");
+                    var bitmapArr = pool.Rent(sizes.Length);
+
+                    for (int i = 0; i < sizes.Length; i++)
                     {
-                        break;
-                    }
-
-
-                    //var bitmapArr = new Bitmap[1];
-
-                    // Изменение размера изображения
-                    using (bitmapArr[i] = new Bitmap(image, new Size(size, size * image.Height / image.Width)))
-                    {
-
-                        //Console.WriteLine($"\nTotalMemory_newBitmap_{size}: {GC.GetTotalMemory(true)}");
-
-                        // Сохранение в формате JPEG
-                        string outputFilePath = @$"{path}\new\{(ii % 2 == 0 ? "small" : "large")}_image_{size}.jpg";
-                        using (FileStream writerStream = new FileStream(outputFilePath, FileMode.Create, FileAccess.Write))
+                        var size = sizes[i];
+                        if (size > image.Width)
                         {
-                            bitmapArr[i].Save(writerStream, ImageFormat.Jpeg);
+                            break;
                         }
 
+
+                        // Изменение размера изображения
+                        using (bitmapArr[i] = new Bitmap(image, new Size(size, size * image.Height / image.Width)))
+                        {
+
+                            //Console.WriteLine($"\nTotalMemory_newBitmap_{size}: {GC.GetTotalMemory(true)}");
+
+                            // Сохранение в формате JPEG
+                            string outputFilePath = @$"{path}\new\{(ii % 2 == 0 ? "small" : "large")}_image_{size}.jpg";
+                            using (FileStream writerStream = new FileStream(outputFilePath, FileMode.Create, FileAccess.Write))
+                            {
+                                bitmapArr[i].Save(writerStream, ImageFormat.Jpeg);
+                            }
+
+                        }
                     }
+
+                    pool.Return(bitmapArr);
+
                 }
-
-                pool.Return(bitmapArr);
-
-                //}
             }
         }
 

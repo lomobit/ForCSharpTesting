@@ -32,51 +32,117 @@ public class BitmapsWithArrayPoolAndWithout
     }
 
     [Benchmark]
-    public void WithArrayPool()
+    public void WithArrayPoolWithKiBBuffer()
     {
-        var pool = ArrayPool<Bitmap>.Shared;
-        using (FileStream readerStream = new FileStream(Path + TestFile, FileMode.Open, FileAccess.Read))
+        var pool = ArrayPool<byte>.Shared;
+        byte[] smallBuffer = pool.Rent(1024);
+
+        try
         {
-            using (Image image = Image.FromStream(readerStream))
+            // Загрузка файла в Stream
+            using (FileStream readerStream = new FileStream(Path + TestFile, FileMode.Open, FileAccess.Read))
             {
-                var bitmapArr = pool.Rent(Sizes.Length);
-
-                for (int i = 0; i < Sizes.Length; i++)
+                // Преобразование Stream в Image
+                using (Image image = Image.FromStream(readerStream))
                 {
-                    var size = Sizes[i];
-                    if (size > image.Width)
+
+                    for (int i = 0; i < Sizes.Length; i++)
                     {
-                        break;
-                    }
-
-
-                    // Изменение размера изображения
-                    using (bitmapArr[i] = new Bitmap(image, new Size(size, size * image.Height / image.Width)))
-                    { 
-                        // Сохранение в формате JPEG
-                        string outputFilePath = @$"{Path}\new\{TestFile}_arrayPool_image_{size}.jpg";
-                        using (FileStream writerStream = new FileStream(outputFilePath, FileMode.Create, FileAccess.Write))
+                        var size = Sizes[i];
+                        if (size > image.Width)
                         {
-                            bitmapArr[i].Save(writerStream, ImageFormat.Jpeg);
+                            break;
                         }
 
+                        // Изменение размера изображения
+                        using (var bitmap = new Bitmap(image, new Size(size, size * image.Height / image.Width)))
+                        { 
+                            // Сохранение в формате JPEG
+                            string outputFilePath = @$"{Path}\new\{TestFile}_withoutArrayPool_image_{size}.jpg";
+                            using (MemoryStream memoryStream = new MemoryStream(smallBuffer))
+                            {
+                                bitmap.Save(memoryStream, ImageFormat.Jpeg); 
+                                memoryStream.Position = 0;
+
+                                using (FileStream writerStream =
+                                       new FileStream(outputFilePath, FileMode.Create, FileAccess.Write))
+                                {
+                                    // Копирование данных из MemoryStream в FileStream
+                                    memoryStream.CopyTo(writerStream);
+                                }
+                            }
+                        }
                     }
                 }
-
-                pool.Return(bitmapArr);
-
             }
+        }
+        finally
+        {
+            pool.Return(smallBuffer);
+        }
+    }
+
+    [Benchmark]
+    public void WithArrayPoolWithMiBBuffer()
+    {
+        var pool = ArrayPool<byte>.Shared;
+        byte[] smallBuffer = pool.Rent(1024*1024);
+
+        try
+        {
+            // Загрузка файла в Stream
+            using (FileStream readerStream = new FileStream(Path + TestFile, FileMode.Open, FileAccess.Read))
+            {
+                // Преобразование Stream в Image
+                using (Image image = Image.FromStream(readerStream))
+                {
+
+                    for (int i = 0; i < Sizes.Length; i++)
+                    {
+                        var size = Sizes[i];
+                        if (size > image.Width)
+                        {
+                            break;
+                        }
+
+                        // Изменение размера изображения
+                        using (var bitmap = new Bitmap(image, new Size(size, size * image.Height / image.Width)))
+                        {
+                            // Сохранение в формате JPEG
+                            string outputFilePath = @$"{Path}\new\{TestFile}_withoutArrayPool_image_{size}.jpg";
+                            using (MemoryStream memoryStream = new MemoryStream(smallBuffer))
+                            {
+                                bitmap.Save(memoryStream, ImageFormat.Jpeg);
+                                memoryStream.Position = 0;
+
+                                using (FileStream writerStream =
+                                       new FileStream(outputFilePath, FileMode.Create, FileAccess.Write))
+                                {
+                                    // Копирование данных из MemoryStream в FileStream
+                                    memoryStream.CopyTo(writerStream);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        finally
+        {
+            pool.Return(smallBuffer);
         }
     }
 
     [Benchmark]
     public void WithoutArrayPool()
     {
+        // Загрузка файла в Stream
         using (FileStream readerStream = new FileStream(Path + TestFile, FileMode.Open, FileAccess.Read))
-        { 
+        {
             // Преобразование Stream в Image
             using (Image image = Image.FromStream(readerStream))
             {
+
                 for (int i = 0; i < Sizes.Length; i++)
                 {
                     var size = Sizes[i];
@@ -87,12 +153,20 @@ public class BitmapsWithArrayPoolAndWithout
 
                     // Изменение размера изображения
                     using (var bitmap = new Bitmap(image, new Size(size, size * image.Height / image.Width)))
-                    { 
+                    {
                         // Сохранение в формате JPEG
                         string outputFilePath = @$"{Path}\new\{TestFile}_withoutArrayPool_image_{size}.jpg";
-                        using (FileStream writerStream = new FileStream(outputFilePath, FileMode.Create, FileAccess.Write))
+                        using (MemoryStream memoryStream = new MemoryStream())
                         {
-                            bitmap.Save(writerStream, ImageFormat.Jpeg);
+                            bitmap.Save(memoryStream, ImageFormat.Jpeg);
+                            memoryStream.Position = 0;
+
+                            using (FileStream writerStream =
+                                   new FileStream(outputFilePath, FileMode.Create, FileAccess.Write))
+                            {
+                                // Копирование данных из MemoryStream в FileStream
+                                memoryStream.CopyTo(writerStream);
+                            }
                         }
                     }
                 }

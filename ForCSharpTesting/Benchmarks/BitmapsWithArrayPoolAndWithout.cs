@@ -1,9 +1,8 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Diagnostics.Windows.Configs;
-using System.Buffers;
-using System.Drawing.Imaging;
-using System.Drawing;
 using BenchmarkDotNet.Running;
+using SkiaSharp;
+using Microsoft.Maui.Graphics;
 
 namespace ForCSharpTesting.Benchmarks;
 
@@ -32,145 +31,62 @@ public class BitmapsWithArrayPoolAndWithout
     }
 
     [Benchmark]
-    public void WithArrayPoolWithKiBBuffer()
-    {
-        var pool = ArrayPool<byte>.Shared;
-        byte[] smallBuffer = pool.Rent(1024);
-
-        try
-        {
-            // Загрузка файла в Stream
-            using (FileStream readerStream = new FileStream(Path + TestFile, FileMode.Open, FileAccess.Read))
-            {
-                // Преобразование Stream в Image
-                using (Image image = Image.FromStream(readerStream))
-                {
-
-                    for (int i = 0; i < Sizes.Length; i++)
-                    {
-                        var size = Sizes[i];
-                        if (size > image.Width)
-                        {
-                            break;
-                        }
-
-                        // Изменение размера изображения
-                        using (var bitmap = new Bitmap(image, new Size(size, size * image.Height / image.Width)))
-                        { 
-                            // Сохранение в формате JPEG
-                            string outputFilePath = @$"{Path}\new\{TestFile}_withoutArrayPool_image_{size}.jpg";
-                            using (MemoryStream memoryStream = new MemoryStream(smallBuffer))
-                            {
-                                bitmap.Save(memoryStream, ImageFormat.Jpeg); 
-                                memoryStream.Position = 0;
-
-                                using (FileStream writerStream =
-                                       new FileStream(outputFilePath, FileMode.Create, FileAccess.Write))
-                                {
-                                    // Копирование данных из MemoryStream в FileStream
-                                    memoryStream.CopyTo(writerStream);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        finally
-        {
-            pool.Return(smallBuffer);
-        }
-    }
-
-    [Benchmark]
-    public void WithArrayPoolWithMiBBuffer()
-    {
-        var pool = ArrayPool<byte>.Shared;
-        byte[] smallBuffer = pool.Rent(1024*1024);
-
-        try
-        {
-            // Загрузка файла в Stream
-            using (FileStream readerStream = new FileStream(Path + TestFile, FileMode.Open, FileAccess.Read))
-            {
-                // Преобразование Stream в Image
-                using (Image image = Image.FromStream(readerStream))
-                {
-
-                    for (int i = 0; i < Sizes.Length; i++)
-                    {
-                        var size = Sizes[i];
-                        if (size > image.Width)
-                        {
-                            break;
-                        }
-
-                        // Изменение размера изображения
-                        using (var bitmap = new Bitmap(image, new Size(size, size * image.Height / image.Width)))
-                        {
-                            // Сохранение в формате JPEG
-                            string outputFilePath = @$"{Path}\new\{TestFile}_withoutArrayPool_image_{size}.jpg";
-                            using (MemoryStream memoryStream = new MemoryStream(smallBuffer))
-                            {
-                                bitmap.Save(memoryStream, ImageFormat.Jpeg);
-                                memoryStream.Position = 0;
-
-                                using (FileStream writerStream =
-                                       new FileStream(outputFilePath, FileMode.Create, FileAccess.Write))
-                                {
-                                    // Копирование данных из MemoryStream в FileStream
-                                    memoryStream.CopyTo(writerStream);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        finally
-        {
-            pool.Return(smallBuffer);
-        }
-    }
-
-    [Benchmark]
-    public void WithoutArrayPool()
+    public void SkiaSharp()
     {
         // Загрузка файла в Stream
-        using (FileStream readerStream = new FileStream(Path + TestFile, FileMode.Open, FileAccess.Read))
+        using FileStream readerStream = new FileStream(Path + TestFile, FileMode.Open, FileAccess.Read);
+        // Преобразование Stream в Image
+        using var bitmap = SKBitmap.Decode(readerStream);
+        for (int i = 0; i < Sizes.Length; i++)
         {
-            // Преобразование Stream в Image
-            using (Image image = Image.FromStream(readerStream))
+            var size = Sizes[i];
+            if (size > bitmap.Width)
             {
-
-                for (int i = 0; i < Sizes.Length; i++)
-                {
-                    var size = Sizes[i];
-                    if (size > image.Width)
-                    {
-                        break;
-                    }
-
-                    // Изменение размера изображения
-                    using (var bitmap = new Bitmap(image, new Size(size, size * image.Height / image.Width)))
-                    {
-                        // Сохранение в формате JPEG
-                        string outputFilePath = @$"{Path}\new\{TestFile}_withoutArrayPool_image_{size}.jpg";
-                        using (MemoryStream memoryStream = new MemoryStream())
-                        {
-                            bitmap.Save(memoryStream, ImageFormat.Jpeg);
-                            memoryStream.Position = 0;
-
-                            using (FileStream writerStream =
-                                   new FileStream(outputFilePath, FileMode.Create, FileAccess.Write))
-                            {
-                                // Копирование данных из MemoryStream в FileStream
-                                memoryStream.CopyTo(writerStream);
-                            }
-                        }
-                    }
-                }
+                break;
             }
+
+            using var resizedBitmap = bitmap.Resize(new SKImageInfo(size, size * bitmap.Height / bitmap.Width), default(SKSamplingOptions));
+            // Сохранение в формате JPEG
+            string outputFilePath = @$"{Path}\new\{TestFile}_SkiaSharp_image_{size}.jpg";
+            using var image = SKImage.FromBitmap(resizedBitmap);
+            using MemoryStream memoryStream = new MemoryStream();
+            using var data = image.Encode(SKEncodedImageFormat.Jpeg, 80);
+            data.SaveTo(memoryStream);
+
+            memoryStream.Position = 0;
+
+            using FileStream writerStream = new FileStream(outputFilePath, FileMode.Create, FileAccess.Write);
+            // Копирование данных из MemoryStream в FileStream
+            memoryStream.CopyTo(writerStream);
+        }
+    }
+
+    [Benchmark]
+    public void SystemDrawing()
+    {
+        // Загрузка файла в Stream
+        using FileStream readerStream = new FileStream(Path + TestFile, FileMode.Open, FileAccess.Read);
+        // Преобразование Stream в Image
+        using var image = System.Drawing.Image.FromStream(readerStream);
+        for (int i = 0; i < Sizes.Length; i++)
+        {
+            var size = Sizes[i];
+            if (size > image.Width)
+            {
+                break;
+            }
+
+            // Изменение размера изображения
+            using var bitmap = new System.Drawing.Bitmap(image, new System.Drawing.Size(size, size * image.Height / image.Width));
+            // Сохранение в формате JPEG
+            string outputFilePath = @$"{Path}\new\{TestFile}_SystemDrawing_image_{size}.jpg";
+            using MemoryStream memoryStream = new MemoryStream();
+            bitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Jpeg);
+            memoryStream.Position = 0;
+
+            using FileStream writerStream = new FileStream(outputFilePath, FileMode.Create, FileAccess.Write);
+            // Копирование данных из MemoryStream в FileStream
+            memoryStream.CopyTo(writerStream);
         }
     }
 }

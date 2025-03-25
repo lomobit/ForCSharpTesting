@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Xunit.Sdk;
 
 namespace ForCSharpTesting;
 
@@ -13,11 +14,20 @@ public class Program
     const int countTasks = 1000;
     const int countIterations = 10;
 
+    static bool needToCount = true;
+
+    static int count = 0;
+
+    static List<int> list = new List<int>(4 * 60); // 4 минуты
+
     public static void Main(string[] args)
     {
         //BitmapsWithArrayPoolAndWithout.StartBenchmark();
 
         //GCNotiofication.StartGCCheck();
+
+        Thread jobPerSecondCounter = new Thread(Count);
+        jobPerSecondCounter.Start();
 
         Console.WriteLine($"TotalMemory_before: {GC.GetTotalMemory(true)}");
 
@@ -31,11 +41,25 @@ public class Program
 
         Task.WhenAll(tasks).GetAwaiter().GetResult();
 
+        needToCount = false;
+
+        Console.WriteLine(list.Sum() / list.Count);
+        Console.WriteLine(count);
+
         Console.WriteLine($"TotalMemory_final: {GC.GetTotalMemory(true)}");
 
         //GCNotiofication.StopGCCheck();
 
         Console.ReadKey();
+    }
+
+    public static void Count()
+    {
+        while (needToCount)
+        {
+            Thread.Sleep(1000);
+            list.Add(count);
+        }
     }
 
     public static async Task SkiaSharp()
@@ -56,6 +80,7 @@ public class Program
         var consoleInfo = false;
         for (int ii = 0; ii < countIterations; ii++)
         {
+            count++;
 
             //if (ii % 10 == 0) Console.WriteLine(ii);
             var filePath = ii % 2 == 0 ? smallFilePath : largeFilePath;
@@ -116,6 +141,9 @@ public class Program
                 writerStream.Dispose();
                 File.Delete(outputFilePath);
             }
+
+            count--;
+            await Task.Delay(100);
         }
 
         //GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive);

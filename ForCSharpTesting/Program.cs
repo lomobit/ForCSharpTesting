@@ -11,8 +11,8 @@ namespace ForCSharpTesting;
 
 public class Program
 {
-    const int countTasks = 1000;
-    const int countIterations = 10;
+    const int countTasks = 1;
+    const int countIterations = 2;
 
     static bool needToCount = true;
 
@@ -43,7 +43,7 @@ public class Program
 
         needToCount = false;
 
-        Console.WriteLine(list.Sum() / list.Count);
+        //Console.WriteLine(list.Sum() / list.Count);
         Console.WriteLine(count);
 
         Console.WriteLine($"TotalMemory_final: {GC.GetTotalMemory(true)}");
@@ -108,21 +108,17 @@ public class Program
 
                 if (consoleInfo) Console.WriteLine();
                 if (consoleInfo) Console.WriteLine($"TotalMemory_3_{i}: {GC.GetTotalMemory(true)}");
-                using var resizedBitmap = bitmap.Resize(new SKImageInfo(size, size * bitmap.Height / bitmap.Width), default(SKSamplingOptions));
+                var opt = new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear);
+                using var resizedBitmap = bitmap.Resize(new SKImageInfo(size, size * bitmap.Height / bitmap.Width), opt);
 
                 if (consoleInfo) Console.WriteLine($"TotalMemory_4_{i}: {GC.GetTotalMemory(true)}");
                 // Сохранение в формате JPEG
-                string outputFilePath = @$"{path}\new\{(ii % 2 == 0 ? "small" : "large")}_{Thread.CurrentThread.ManagedThreadId}_{DateTime.Now.Ticks}_image_{size}.jpg";
+                //string outputFilePath = @$"{path}\new\{(ii % 2 == 0 ? "small" : "large")}_{Thread.CurrentThread.ManagedThreadId}_{DateTime.Now.Ticks}_image_{size}.jpg";
+                string outputFilePath = @$"{path}\new\{(ii % 2 == 0 ? "small" : "large")}_image_{size}.jpg";
 
                 if (consoleInfo) Console.WriteLine($"TotalMemory_5_{i}: {GC.GetTotalMemory(true)}");
-                using var image = SKImage.FromBitmap(resizedBitmap);
-                resizedBitmap.Dispose();
 
-                if (consoleInfo) Console.WriteLine($"TotalMemory_6_{i}: {GC.GetTotalMemory(true)}");
-
-                if (consoleInfo) Console.WriteLine($"TotalMemory_7_{i}: {GC.GetTotalMemory(true)}");
-                using var data = image.Encode(SKEncodedImageFormat.Jpeg, 80);
-                image.Dispose();
+                using var data = resizedBitmap.Encode(SKEncodedImageFormat.Jpeg, 85);
 
                 if (consoleInfo) Console.WriteLine($"TotalMemory_8_{i}: {GC.GetTotalMemory(true)}");
 
@@ -139,7 +135,7 @@ public class Program
 
                 dataStream.Dispose();
                 writerStream.Dispose();
-                File.Delete(outputFilePath);
+                //File.Delete(outputFilePath);
             }
 
             count--;

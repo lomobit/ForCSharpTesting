@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 
@@ -6,8 +7,8 @@ namespace ForCSharpTesting.HighLoadTesting;
 
 public static class HighLoadTesting
 {
-    private const int Iterations = 2; //10;
-    private const int TasksCount = 10; //200;
+    private const int Iterations = 250; //10;
+    private const int TasksCount = 2;
 
     const int __30MIN_SECONDS = 30 * 60; // 30 min
     private static int RPSCount;
@@ -15,26 +16,33 @@ public static class HighLoadTesting
     private static List<long> RequestsDurations;
     private static bool CheckRPS;
 
+    private static bool _writeDebugInfo = true;
+
     public static async Task HighLoadFilesMultiThread()
     {
+        if (_writeDebugInfo) Console.WriteLine($"Method {nameof(HighLoadFilesMultiThread)} start");
         RPSCount = 0;
         RPSList = new(__30MIN_SECONDS);
         RequestsDurations = new();
         CheckRPS = true;
 
+        if (_writeDebugInfo) Console.WriteLine($"Thread with method {nameof(GetCurrentRPSSnapshot)} start");
         var RPSThread = new Thread(GetCurrentRPSSnapshot);
         RPSThread.Start();
 
-
+        if (_writeDebugInfo) Console.WriteLine($"Start creating {TasksCount} tasks");
         var tasks = new List<Task>(TasksCount);
         for (int i = 0; i < TasksCount; i++)
         {
+            if (_writeDebugInfo) Console.WriteLine($"Task {i} creating");
             var task = new Task(HighLoadFiles);
             tasks.Add(task);
 
+            if (_writeDebugInfo) Console.WriteLine($"Task {i} start");
             task.Start();
         }
 
+        if (_writeDebugInfo) Console.WriteLine($"Await tasks");
         await Task.WhenAll(tasks);
 
         CheckRPS = false;
@@ -79,12 +87,14 @@ public static class HighLoadTesting
         ];
 
         using var client = new HttpClient();
+        client.Timeout = TimeSpan.FromMinutes(10);
+
         var stopwatch = new Stopwatch();
 
         for (int i = 0; i < Iterations; i++)
         {
             RPSCount++;
-            Console.WriteLine($"{Thread.CurrentThread.ManagedThreadId}: Start request");
+            if (_writeDebugInfo) Console.WriteLine($"{Thread.CurrentThread.ManagedThreadId}: Start request");
             
 
             using var form = new MultipartFormDataContent();
@@ -115,8 +125,10 @@ public static class HighLoadTesting
             RequestsDurations.Add(stopwatch.ElapsedMilliseconds);
             stopwatch.Reset();
 
-            Console.WriteLine($"{Thread.CurrentThread.ManagedThreadId}: {body}");
+            if (_writeDebugInfo) Console.WriteLine($"{Thread.CurrentThread.ManagedThreadId}: End request");
             RPSCount--;
+
+            if (_writeDebugInfo) Console.WriteLine($"Current RPS: {RPSCount}");
         }
     }
 }

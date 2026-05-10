@@ -2,8 +2,8 @@ C#:
 1. Массивы и Два указателя
 	+ #1 — Two Sum (Easy)
 	+ #125 — Valid Palindrome (Easy)
-	- #15 — 3Sum (Medium)
-	#3 — Longest Substring Without Repeating Characters (Medium)
+	+ #15 — 3Sum (Medium)
+	- #3 — Longest Substring Without Repeating Characters (Medium)
 2. Бинарный поиск и Сортировка
 	#704 — Binary Search (Easy)
 	#88 — Merge Sorted Array (Easy)

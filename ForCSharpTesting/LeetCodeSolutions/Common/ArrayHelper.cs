@@ -46,5 +46,12 @@ namespace ForCSharpTesting.LeetCodeSolutions.Common
 
             return $"[[{string.Join($"],{space}[", array.Select(subArray => string.Join($",{space}", subArray)))}]]";
         }
+
+        public static string GetPrintedList(IList<IList<int>> array, bool needSpaceBetweenNumbers)
+        {
+            string space = needSpaceBetweenNumbers ? " " : string.Empty;
+
+            return $"[[{string.Join($"],{space}[", array.Select(subArray => string.Join($",{space}", subArray)))}]]";
+        }
     }
 }

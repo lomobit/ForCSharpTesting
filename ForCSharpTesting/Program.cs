@@ -1,4 +1,4 @@
-﻿using System.Net.Http.Headers;
+﻿using ForCSharpTesting.LeetCodeSolutions.Interview._2026;
 
 namespace ForCSharpTesting;
 
@@ -6,10 +6,9 @@ public class Program
 {
     static async Task Main(string[] args)
     {
-        //HighLoadTesting.HighLoadTesting.HighLoadFiles();
-        //return;
+        var task = new Sum3();
 
-        await HighLoadTesting.HighLoadTesting.HighLoadFilesMultiThread();
+        task.RunTests();
     }
 }
 

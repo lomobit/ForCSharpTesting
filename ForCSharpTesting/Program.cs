@@ -6,7 +6,7 @@ public class Program
 {
     static async Task Main(string[] args)
     {
-        var task = new Sum3();
+        var task = new KthLargestElementInAnArray();
 
         task.RunTests();
     }

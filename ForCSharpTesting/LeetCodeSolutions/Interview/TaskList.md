@@ -3,12 +3,12 @@ C#:
 	+ #1 — Two Sum (Easy)
 	+ #125 — Valid Palindrome (Easy)
 	+ #15 — 3Sum (Medium)
-	- #3 — Longest Substring Without Repeating Characters (Medium)
+	+ #3 — Longest Substring Without Repeating Characters (Medium)
 2. Бинарный поиск и Сортировка
-	#704 — Binary Search (Easy)
-	#88 — Merge Sorted Array (Easy)
-	#33 — Search in Rotated Sorted Array (Medium)
-	#215 — Kth Largest Element in an Array (Medium)
+	+ #704 — Binary Search (Easy)
+	+ #88 — Merge Sorted Array (Easy)
+	+ #33 — Search in Rotated Sorted Array (Medium)
+	- #215 — Kth Largest Element in an Array (Medium)
 3. Связные списки
 	#206 — Reverse Linked List (Easy)
 	#141 — Linked List Cycle (Easy)

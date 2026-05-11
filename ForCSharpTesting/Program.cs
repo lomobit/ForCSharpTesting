@@ -6,7 +6,7 @@ public class Program
 {
     static async Task Main(string[] args)
     {
-        var task = new RemoveNthNodeFromEndOfList();
+        var task = new NumberOfIslands();
 
         task.RunTests();
     }

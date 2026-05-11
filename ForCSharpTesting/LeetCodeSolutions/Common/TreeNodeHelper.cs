@@ -6,6 +6,11 @@ public static class TreeNodeHelper
 
     public static string TreeNodeToStringPresentation<T>(TreeNode<T> root)
     {
+        if (root is null)
+        {
+            return "[]";
+        }
+
         var nodeList = new List<string>();
         var nullList = new List<string>();
 

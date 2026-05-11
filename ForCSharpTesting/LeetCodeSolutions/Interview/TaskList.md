@@ -15,10 +15,10 @@ C#:
 	+ #2 — Add Two Numbers (Medium)
 	+ #19 — Remove Nth Node From End of List (Medium)
 4. Деревья и Графы
-	- #226 — Invert Binary Tree (Easy)
-	#104 — Maximum Depth of Binary Tree (Easy)
-	#102 — Binary Tree Level Order Traversal (Medium)
-	#200 — Number of Islands (Medium)
+	+ #226 — Invert Binary Tree (Easy)
+	+ #104 — Maximum Depth of Binary Tree (Easy)
+	+ #102 — Binary Tree Level Order Traversal (Medium)
+	- #200 — Number of Islands (Medium)
 5. Динамическое программирование
 	#70 — Climbing Stairs (Easy)
 	#121 — Best Time to Buy and Sell Stock (Easy)

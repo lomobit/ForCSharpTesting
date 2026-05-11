@@ -40,14 +40,14 @@ namespace ForCSharpTesting.LeetCodeSolutions.Common
             return result;
         }
 
-        public static string GetPrintedArray(int[][] array, bool needSpaceBetweenNumbers)
+        public static string GetPrintedArray(int[][] array, bool needSpaceBetweenNumbers = true)
         {
             string space = needSpaceBetweenNumbers ? " " : string.Empty;
 
             return $"[[{string.Join($"],{space}[", array.Select(subArray => string.Join($",{space}", subArray)))}]]";
         }
 
-        public static string GetPrintedList(IList<IList<int>> array, bool needSpaceBetweenNumbers)
+        public static string GetPrintedList(IList<IList<int>> array, bool needSpaceBetweenNumbers = true)
         {
             string space = needSpaceBetweenNumbers ? " " : string.Empty;
 

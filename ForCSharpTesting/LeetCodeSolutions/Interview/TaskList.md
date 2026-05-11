@@ -11,11 +11,11 @@ C#:
 	+ #215 — Kth Largest Element in an Array (Medium)
 3. Связные списки
 	+ #206 — Reverse Linked List (Easy)
-	- #141 — Linked List Cycle (Easy)
-	#2 — Add Two Numbers (Medium)
-	#19 — Remove Nth Node From End of List (Medium)
+	+ #141 — Linked List Cycle (Easy)
+	+ #2 — Add Two Numbers (Medium)
+	+ #19 — Remove Nth Node From End of List (Medium)
 4. Деревья и Графы
-	#226 — Invert Binary Tree (Easy)
+	- #226 — Invert Binary Tree (Easy)
 	#104 — Maximum Depth of Binary Tree (Easy)
 	#102 — Binary Tree Level Order Traversal (Medium)
 	#200 — Number of Islands (Medium)

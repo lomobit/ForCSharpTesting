@@ -16,6 +16,11 @@ namespace ForCSharpTesting.LeetCodeSolutions.Common
     {
         public static ListNode FillListNodeFromArray(int[] arr)
         {
+            if (arr is null || arr.Length == 0)
+            {
+                return null;
+            }
+
             var result = new ListNode();
             var currentNode = result;
             ListNode lastNode = null;
@@ -39,6 +44,11 @@ namespace ForCSharpTesting.LeetCodeSolutions.Common
 
         public static string PrintListNode(ListNode head)
         {
+            if (head is null)
+            {
+                return string.Empty;
+            }
+
             if (head.next is null)
             {
                 return head.val.ToString();

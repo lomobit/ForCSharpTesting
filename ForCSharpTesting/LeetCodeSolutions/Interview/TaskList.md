@@ -18,9 +18,9 @@ C#:
 	+ #226 — Invert Binary Tree (Easy)
 	+ #104 — Maximum Depth of Binary Tree (Easy)
 	+ #102 — Binary Tree Level Order Traversal (Medium)
-	- #200 — Number of Islands (Medium)
+	+ #200 — Number of Islands (Medium)
 5. Динамическое программирование
-	#70 — Climbing Stairs (Easy)
+	- #70 — Climbing Stairs (Easy)
 	#121 — Best Time to Buy and Sell Stock (Easy)
 	#322 — Coin Change (Medium)
 	#300 — Longest Increasing Subsequence (Medium)

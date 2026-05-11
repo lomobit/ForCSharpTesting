@@ -6,7 +6,7 @@ public abstract class BaseLeetCodeTask<TestInput, TestResult>
     
     public abstract (bool Equity, TestResult FactResult) RunTest((TestInput Input, TestResult Result) test);
 
-    public void RunTests()
+    public virtual void RunTests()
     {
         var tests = GetTests().ToArray();
 

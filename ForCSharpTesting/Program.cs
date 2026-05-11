@@ -6,7 +6,7 @@ public class Program
 {
     static async Task Main(string[] args)
     {
-        var task = new KthLargestElementInAnArray();
+        var task = new ReverseLinkedList();
 
         task.RunTests();
     }

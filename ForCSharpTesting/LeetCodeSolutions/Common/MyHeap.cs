@@ -32,9 +32,12 @@ public class MyHeapMax : IHeap<int>
         Array.Copy(array, heap._internalArray, array.Length);
         heap._count = array.Length;
 
-        for (int i = heap._internalArray.Length / 2 - 1; i >= 0; i--)
+        //Console.WriteLine($"init: [{string.Join(", ", heap._internalArray)}]");
+
+        for (int i = heap._internalArray.Length / 2; i >= 0; i--)
         {
             heap.SiftDown(i);
+            //Console.WriteLine($"{i}: [{string.Join(", ", heap._internalArray)}]");
         }
 
         return heap;
@@ -68,12 +71,12 @@ public class MyHeapMax : IHeap<int>
             var leftChildIndex = index * 2 + 1;
             var rightChildIndex = index * 2 + 2;
 
-            if (leftChildIndex < _count && _internalArray[leftChildIndex] > _internalArray[index])
+            if (leftChildIndex < _count && _internalArray[leftChildIndex] > _internalArray[maxIndex])
             {
                 maxIndex = leftChildIndex;
             }
 
-            if (rightChildIndex < _count && _internalArray[rightChildIndex] > _internalArray[index])
+            if (rightChildIndex < _count && _internalArray[rightChildIndex] > _internalArray[maxIndex])
             {
                 maxIndex = rightChildIndex;
             }

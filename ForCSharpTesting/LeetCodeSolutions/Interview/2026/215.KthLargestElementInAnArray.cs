@@ -6,12 +6,17 @@ public class KthLargestElementInAnArray : BaseLeetCodeTask<KthLargestElementInAn
 {
     public int FindKthLargest(int[] nums, int k)
     {
-        var heap = MyHeapMax.FromArray(nums);
+        //var heap = MyHeapMax.FromArray(nums);
+        var heap = new PriorityQueue<int, int>(nums.Length);
+        foreach (var num in nums)
+        {
+            heap.Enqueue(num, -num);
+        }
 
         var result = 0;
         for (int i = 0; i < k; i++)
         {
-            result = heap.Pop();
+            result = heap.Dequeue();
         }
 
         return result;

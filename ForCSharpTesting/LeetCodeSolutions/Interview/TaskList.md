@@ -32,13 +32,13 @@ C#:
 
 PostgreSQL:
 1. Базовая фильтрация и соединение (JOIN)
-	#175 — Combine Two Tables (Easy)
-	#197 — Rising Temperature (Easy) — работа с датами
-	#570 — Managers with at least 5 Direct Reports (Medium) — Self-Join
-	#1934 — Confirmation Rate (Medium) — LEFT JOIN + агрегация
+	+ #175 — Combine Two Tables (Easy)
+	+ #197 — Rising Temperature (Easy) — работа с датами
+	+ #570 — Managers with at least 5 Direct Reports (Medium) — Self-Join
+	+ #1934 — Confirmation Rate (Medium) — LEFT JOIN + агрегация
 
 2. Группировка и Агрегация (GROUP BY)
-	#596 — Classes More Than 5 Students (Easy)
+	- #596 — Classes More Than 5 Students (Easy)
 	#1141 — User Activity for the Past 30 Days I (Easy)
 	#1174 — Immediate Food Delivery II (Medium)
 	#550 — Game Play Analysis IV (Medium) — сложная агрегация

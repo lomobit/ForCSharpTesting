@@ -38,16 +38,16 @@ PostgreSQL:
 	+ #1934 — Confirmation Rate (Medium) — LEFT JOIN + агрегация
 
 2. Группировка и Агрегация (GROUP BY)
-	- #596 — Classes More Than 5 Students (Easy)
-	#1141 — User Activity for the Past 30 Days I (Easy)
-	#1174 — Immediate Food Delivery II (Medium)
-	#550 — Game Play Analysis IV (Medium) — сложная агрегация
+	+ #596 — Classes More Than 5 Students (Easy)
+	+ #1141 — User Activity for the Past 30 Days I (Easy)
+	+ #1174 — Immediate Food Delivery II (Medium)
+	+ #550 — Game Play Analysis IV (Medium) — сложная агрегация
 
 3. Оконные функции (Window Functions)
-	#178 — Rank Scores (Medium)
-	#180 — Consecutive Numbers (Medium) — нахождение последовательностей
-	#184 — Department Highest Salary (Medium)
-	#1164 — Product Price at a Given Date (Medium)
+	+ #178 — Rank Scores (Medium)
+	+ #180 — Consecutive Numbers (Medium) — нахождение последовательностей
+	+ #184 — Department Highest Salary (Medium)
+	+ #1164 — Product Price at a Given Date (Medium)
 
 4. Условная логика (CASE WHEN)
 	#627 — Swap Salary (Easy) — UPDATE с условием

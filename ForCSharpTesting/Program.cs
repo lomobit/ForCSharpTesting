@@ -1,14 +1,10 @@
-﻿using ForCSharpTesting.LeetCodeSolutions.Interview._2026;
-
-namespace ForCSharpTesting;
+﻿namespace ForCSharpTesting;
 
 public class Program
 {
     static async Task Main(string[] args)
     {
-        var task = new NumberOfIslands();
-
-        task.RunTests();
+        
     }
 }
 

@@ -46,6 +46,19 @@ public static class MongoTest
 
         Console.WriteLine("");
         Console.WriteLine("");
+        Console.WriteLine("==== ORDER =================================");
+
+        var orders = await orderCollection.Find(Builders<Order>.Filter.Empty).ToListAsync();
+        foreach (var order in orders)
+        {
+            Console.WriteLine(order);
+        }
+
+
+        return;
+
+        Console.WriteLine("");
+        Console.WriteLine("");
         Console.WriteLine("==== RANDOM_QUERIES =================================");
 
         var filter3 = Builders<User>.Filter.Eq(u => u.City, "Москва");
@@ -95,5 +108,50 @@ public static class MongoTest
                     .SetElementName("currency");
             });
         }
+    }
+
+    public static void ConfigureCOmposeObject()
+    {
+        // 1. Регистрация вложенного класса OrderUser
+        BsonClassMap.RegisterClassMap<OrderUser>(cm =>
+        {
+            cm.AutoMap(); // Автоматически маппит остальные свойства
+
+            cm.MapMember(c => c.UserId)
+                .SetElementName("user_id")
+                .SetSerializer(new StringSerializer(BsonType.ObjectId));
+
+            cm.MapMember(c => c.DeliveryAddress)
+                .SetElementName("deliveryAdress");
+        });
+
+        // 2. Регистрация вложенного класса OrderProduct
+        BsonClassMap.RegisterClassMap<OrderProduct>(cm =>
+        {
+            cm.AutoMap();
+
+            cm.MapMember(c => c.ProductId)
+                .SetElementName("product_id")
+                .SetSerializer(new StringSerializer(BsonType.ObjectId));
+
+            cm.MapMember(c => c.Name).SetElementName("name");
+            cm.MapMember(c => c.Price).SetElementName("price");
+            cm.MapMember(c => c.Currency).SetElementName("currency");
+        });
+
+        // 3. Регистрация корневого класса Order
+        BsonClassMap.RegisterClassMap<Order>(cm =>
+        {
+            cm.AutoMap();
+
+            // Настройка Id (аналог [BsonId] и [BsonRepresentation])
+            cm.MapIdMember(c => c.Id)
+                .SetSerializer(new StringSerializer(BsonType.ObjectId))
+                .SetIdGenerator(StringObjectIdGenerator.Instance);
+
+            cm.MapMember(c => c.User).SetElementName("user");
+            cm.MapMember(c => c.Product).SetElementName("product");
+            cm.MapMember(c => c.CreateTime).SetElementName("createTime");
+        });
     }
 }

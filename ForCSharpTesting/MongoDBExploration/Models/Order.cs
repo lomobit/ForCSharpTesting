@@ -1,7 +1,14 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System.Xml.Linq;
 
 namespace ForCSharpTesting.MongoDBExploration.Models;
+
+public static class Constants
+{
+    public const string Tab = "  ";
+    public const string SubTab = "    ";
+}
 
 public class Order
 {
@@ -17,6 +24,16 @@ public class Order
 
     [BsonElement("createTime")]
     public DateTime CreateTime { get; set; }
+
+    public override string ToString()
+    {
+        return $"{{" +
+               $"\n{Constants.Tab}_id: {Id}," +
+               $"\n{Constants.Tab}user: {User}," +
+               $"\n{Constants.Tab}product: {Product}," +
+               $"\n{Constants.Tab}createTime: {CreateTime}" +
+               $"\n}}";
+    }
 }
 
 public class OrderUser
@@ -27,6 +44,14 @@ public class OrderUser
 
     [BsonElement("deliveryAdress")]
     public string DeliveryAddress { get; set; }
+
+    public override string ToString()
+    {
+        return $"{Constants.Tab}" +
+               $"{{\n{Constants.SubTab}user_id: {UserId}," +
+               $"\n{Constants.SubTab}deliveryAdress: {DeliveryAddress}" +
+               $"\n{Constants.Tab}}}";
+    }
 }
 
 public class OrderProduct
@@ -43,4 +68,14 @@ public class OrderProduct
 
     [BsonElement("currency")]
     public string Currency { get; set; }
+
+    public override string ToString()
+    {
+        return $"{Constants.Tab}" +
+               $"{{\n{Constants.SubTab}product_id: {ProductId}," +
+               $"\n{Constants.SubTab}name: {Name}," +
+               $"\n{Constants.SubTab}price: {Price}," +
+               $"\n{Constants.SubTab}currency: {Currency}" +
+               $"\n{Constants.Tab}}}";
+    }
 }
